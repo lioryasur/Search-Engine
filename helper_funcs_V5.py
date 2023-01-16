@@ -14,8 +14,10 @@ from nltk.metrics.distance import jaccard_distance
 from nltk.util import ngrams
 from index_module import create_title_dict
 from nltk.stem.porter import *
+
 stemmer = PorterStemmer()
 
+# Create a set of stopwords
 english_stopwords = frozenset(stopwords.words('english'))
 corpus_stopwords = ["category", "references", "also", "external", "links", 
                     "may", "first", "see", "history", "people", "one", "two", 
@@ -23,16 +25,21 @@ corpus_stopwords = ["category", "references", "also", "external", "links",
                     "many", "however", "would", "became"]
 
 all_stopwords = english_stopwords.union(corpus_stopwords)
+
+# Regular expression to match words
 RE_WORD = re.compile(r"""[\#\@\w](['\-]?\w){2,24}""", re.UNICODE)
+
+# Constants for reading the posting list
 BLOCK_SIZE = 1999998
 TUPLE_SIZE = 6       
 TF_MASK = 2 ** 16 - 1 # Masking the 16 low bits of an integer
 
-
+# Create a title dictionary
 global title_dict
 title_dict = create_title_dict()
 
 def tokenize(text):
+    """ Tokenize the text by matching words in the text using regular expression and remove stopwords"""
     list_of_tokens =  [token.group() for token in RE_WORD.finditer(text.lower()) if token.group() if token.group() not in all_stopwords]
     return list_of_tokens
 
